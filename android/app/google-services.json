@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "172436863715",
+    "project_id": "firechat-242",
+    "storage_bucket": "firechat-242.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172436863715:android:5aa7f29f585b0a872823d6",
+        "android_client_info": {
+          "package_name": "com.example.firechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172436863715-eb87krkrhkstujcf8tpjq3f1sfutm6m8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.firechat",
+            "certificate_hash": "c56227e37713150b8cebc57c12277e98beaada80"
+          }
+        },
+        {
+          "client_id": "172436863715-fjr0k13t8cisqo7crsor8gd3h2v4po5l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbXVAQM58Cs_c_XOTkZyH9HpDo8EvjoRc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172436863715-fjr0k13t8cisqo7crsor8gd3h2v4po5l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
