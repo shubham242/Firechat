@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -8,10 +12,50 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _formkey = GlobalKey<FormState>();
+  var _isLoading = false;
+  bool _isLogin = true;
+  String _email = '';
+  String _password = '';
+  String _username = '';
 
-  void _tryLogin() {
+  void _submitAuthForm(BuildContext con) async {
+    var authresult;
+    final _auth = FirebaseAuth.instanceFor(app: await Firebase.initializeApp());
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      if (_isLogin) {
+        authresult = await _auth.signInWithEmailAndPassword(
+          email: _email,
+          password: _password,
+        );
+      } else {
+        authresult = await _auth.createUserWithEmailAndPassword(
+          email: _email,
+          password: _password,
+        );
+      }
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(authresult.user.uid)
+          .set({'username': _username});
+    } on FirebaseException catch (err) {
+      ScaffoldMessenger.of(con).showSnackBar(SnackBar(
+        content: Text(err.message!),
+        backgroundColor: Theme.of(context).errorColor,
+      ));
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _tryLogin(BuildContext context) {
+    FocusScope.of(context).unfocus();
     if (_formkey.currentState!.validate()) {
       _formkey.currentState!.save();
+      _submitAuthForm(context);
     }
   }
 
@@ -26,44 +70,72 @@ class _AuthScreenState extends State<AuthScreen> {
             child: Padding(
               padding: EdgeInsets.all(8),
               child: Form(
+                key: _formkey,
                 child: Column(
                   children: [
                     Image.asset(
                       'assets/firechat.png',
                       width: 80,
                     ),
+                    if (!_isLogin)
+                      TextFormField(
+                        key: ValueKey('username'),
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(labelText: 'Username'),
+                        validator: (value) {
+                          if (value!.isEmpty) return 'Please Enter Username';
+                        },
+                        onSaved: (value) {
+                          _username = value!.trim();
+                        },
+                      ),
                     TextFormField(
+                      key: ValueKey('email'),
+                      textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(labelText: 'Email'),
                       validator: (value) {
-                        if (!EmailValidator.validate(value!))
+                        if (!EmailValidator.validate(value!.trim()))
                           return 'Please Enter a Valid Email';
                         return null;
                       },
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Username'),
-                      validator: (value) {
-                        if (value!.isEmpty) return 'Please Enter Username';
+                      onSaved: (value) {
+                        _email = value!.trim();
                       },
                     ),
                     TextFormField(
+                      key: ValueKey('password'),
+                      textInputAction: TextInputAction.done,
                       obscureText: true,
                       decoration: InputDecoration(labelText: 'Password'),
                       validator: (value) {
                         if (value!.isEmpty || value.length < 7)
                           return 'Password must be at least 7 characters long';
                       },
+                      onSaved: (value) {
+                        _password = value!.trim();
+                      },
                     ),
                     SizedBox(height: 12),
-                    RaisedButton(
-                      child: Text('Login'),
-                      onPressed: () {},
-                    ),
-                    FlatButton(
-                      child: Text('SignUp'),
-                      onPressed: () {},
-                    )
+                    if (_isLoading)
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    if (!_isLoading)
+                      RaisedButton(
+                        child: Text(_isLogin ? 'Login' : 'SignUp'),
+                        onPressed: () => _tryLogin(context),
+                      ),
+                    if (!_isLoading)
+                      FlatButton(
+                        child: Text(_isLogin ? 'SignUp' : 'LogIn'),
+                        onPressed: () {
+                          setState(() {
+                            _isLogin = !_isLogin;
+                          });
+                        },
+                      )
                   ],
                 ),
               ),
