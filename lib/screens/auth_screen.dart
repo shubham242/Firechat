@@ -68,7 +68,7 @@ class _AuthScreenState extends State<AuthScreen> {
           margin: EdgeInsets.all(20),
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(30),
               child: Form(
                 key: _formkey,
                 child: Column(
