@@ -12,7 +12,7 @@ class _NewMessageState extends State<NewMessage> {
   final _controller = new TextEditingController();
   void _sendMessage() async {
     FocusScope.of(context).unfocus();
-    final user = await FirebaseAuth.instance.currentUser?.uid;
+    final user = FirebaseAuth.instance.currentUser?.uid;
     final userData =
         await FirebaseFirestore.instance.collection('users').doc(user).get();
     if (_message != '')
@@ -21,6 +21,7 @@ class _NewMessageState extends State<NewMessage> {
         'time': Timestamp.now(),
         'userId': user,
         'username': userData['username'],
+        'userimage': userData['url'],
       });
     _controller.clear();
     _message = '';
@@ -35,7 +36,7 @@ class _NewMessageState extends State<NewMessage> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.all(
                   Radius.circular(30),
                 ),

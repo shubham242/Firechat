@@ -46,22 +46,23 @@ class _AuthScreenState extends State<AuthScreen> {
           password: _password,
         );
       }
+      if (!_isLogin) {
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('images')
+            .child(authresult.user.uid + '.jpg');
 
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('images')
-          .child(authresult.user.uid + '.jpg');
+        await ref.putFile(_userImageFile!);
+        final url = await ref.getDownloadURL();
 
-      await ref.putFile(_userImageFile!);
-      final url = await ref.getDownloadURL();
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(authresult.user.uid)
-          .set({
-        'username': _username,
-        'url': url,
-      });
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(authresult.user.uid)
+            .set({
+          'username': _username,
+          'url': url,
+        });
+      }
     } on FirebaseException catch (err) {
       ScaffoldMessenger.of(con).showSnackBar(SnackBar(
         content: Text(err.message!),
@@ -81,7 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Please provide a Profile Picture'),
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
         ),
       );
       return;
@@ -160,17 +161,26 @@ class _AuthScreenState extends State<AuthScreen> {
                         child: CircularProgressIndicator(),
                       ),
                     if (!_isLoading)
-                      RaisedButton(
-                        child: Text(_isLogin ? 'Login' : 'SignUp'),
-                        color: Theme.of(context).accentColor,
+                      ElevatedButton(
                         onPressed: () => _tryLogin(context),
+                        style: ButtonStyle(),
+                        child: Text(
+                          _isLogin ? 'Login' : 'SignUp',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     if (!_isLoading)
-                      FlatButton(
+                      TextButton(
                         child: Text(
                           _isLogin ? 'SignUp' : 'LogIn',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        textColor: Theme.of(context).accentColor,
                         onPressed: () {
                           setState(
                             () {

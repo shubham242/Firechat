@@ -17,14 +17,45 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Firechat',
       theme: ThemeData(
-        primarySwatch: CustomColors.primaryColor,
-        backgroundColor: CustomColors.canvasColor,
-        accentColor: CustomColors.accentColor,
+        primaryColor: CustomColors.primaryColor,
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+          primary: CustomColors.primaryColor,
+          primaryVariant: CustomColors.primaryColor,
+          secondary: CustomColors.accentColor,
+          secondaryVariant: CustomColors.accentColor,
+          surface: CustomColors.canvasColor,
+          background: Colors.white,
+          error: Colors.red,
+          onPrimary: CustomColors.primaryColor,
+          onSecondary: CustomColors.accentColor,
+          onBackground: CustomColors.canvasColor,
+          onError: Colors.red,
+          onSurface: CustomColors.canvasColor,
+        ),
         buttonTheme: ButtonTheme.of(context).copyWith(
-          buttonColor: Colors.blue,
+          buttonColor: CustomColors.accentColor,
           textTheme: ButtonTextTheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: CustomColors.accentColor,
+            textStyle: TextStyle(color: Colors.yellow),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: CustomColors.accentColor,
+            textStyle: TextStyle(color: Colors.yellow),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
         ),
       ),

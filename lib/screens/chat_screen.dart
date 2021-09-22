@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../widgets/new_message.dart';
@@ -10,7 +9,10 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Firechat'),
+        title: Text(
+          'Firechat',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           DropdownButton(
             icon: Icon(
