@@ -117,6 +117,9 @@ class _AuthScreenState extends State<AuthScreen> {
                     if (!_isLogin) ProfilePic(_pickedImage),
                     if (!_isLogin)
                       TextFormField(
+                        autocorrect: true,
+                        textCapitalization: TextCapitalization.words,
+                        enableSuggestions: false,
                         key: ValueKey('username'),
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(labelText: 'Username'),
@@ -128,6 +131,9 @@ class _AuthScreenState extends State<AuthScreen> {
                         },
                       ),
                     TextFormField(
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      enableSuggestions: false,
                       key: ValueKey('email'),
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,

@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MessageBubble extends StatelessWidget {
   final String message;
@@ -6,9 +8,16 @@ class MessageBubble extends StatelessWidget {
   final String userImage;
   final String username;
   final Key key;
+  final DateTime time;
 
   MessageBubble(
-      this.message, this.username, this.userImage, this.isUser, this.key);
+    this.message,
+    this.username,
+    this.userImage,
+    this.isUser,
+    this.key,
+    this.time,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +42,13 @@ class MessageBubble extends StatelessWidget {
               ),
               width: 140,
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              margin: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              // margin: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              margin: EdgeInsets.only(
+                top: 16,
+                bottom: 16,
+                left: isUser ? 20 : 8,
+                right: isUser ? 8 : 20,
+              ),
               child: Column(
                 crossAxisAlignment:
                     isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -65,8 +80,18 @@ class MessageBubble extends StatelessWidget {
             backgroundImage: NetworkImage(userImage),
           ),
         ),
+        Positioned(
+          bottom: 6,
+          left: !isUser ? 120 : null,
+          right: isUser ? 120 : null,
+          child: Text(
+            (DateFormat('hh:mm').format(
+              time,
+            )),
+            style: TextStyle(fontSize: 8),
+          ),
+        ),
       ],
-      overflow: Overflow.visible,
     );
   }
 }

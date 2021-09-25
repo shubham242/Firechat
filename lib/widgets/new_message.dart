@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ntp/ntp.dart';
 
 class NewMessage extends StatefulWidget {
   @override
@@ -11,14 +12,21 @@ class _NewMessageState extends State<NewMessage> {
   var _message = '';
   final _controller = new TextEditingController();
   void _sendMessage() async {
-    FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser?.uid;
     final userData =
         await FirebaseFirestore.instance.collection('users').doc(user).get();
+    DateTime _myTime;
+    DateTime _ntpTime;
+
+    _myTime = DateTime.now();
+
+    final int offset = await NTP.getNtpOffset(localTime: _myTime);
+
+    _ntpTime = _myTime.add(Duration(milliseconds: offset));
     if (_message != '')
       FirebaseFirestore.instance.collection('chats').add({
         'text': _message,
-        'time': Timestamp.now(),
+        'time': _ntpTime,
         'userId': user,
         'username': userData['username'],
         'userimage': userData['url'],
@@ -42,18 +50,26 @@ class _NewMessageState extends State<NewMessage> {
                 ),
               ),
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-              height: 50,
-              child: TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  hintText: 'Text Message',
-                  border: InputBorder.none,
+              height: 60,
+              child: SingleChildScrollView(
+                child: TextField(
+                  textCapitalization: TextCapitalization.sentences,
+                  enableSuggestions: true,
+                  autocorrect: true,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    hintText: 'Text Message',
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (val) {
+                    setState(() {
+                      _message = val;
+                    });
+                  },
                 ),
-                onChanged: (val) {
-                  setState(() {
-                    _message = val;
-                  });
-                },
               ),
             ),
           ),
