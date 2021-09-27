@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../widgets/new_message.dart';
 import '../widgets/messages.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  @override
+  void initState() {
+    final fbm = FirebaseMessaging.instance;
+    fbm.subscribeToTopic('chats');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

@@ -10,7 +10,7 @@ import 'screens/splash_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseMessaging.instance;
   runApp(MyApp());
 }
 
